@@ -1,4 +1,4 @@
-// Lv.4 — Sokoban (small map, 2 boxes)
+// Lv.5 — Sokoban (small map, 2 boxes)
 (function() {
   // Map legend: 0=floor, 1=wall, 2=goal
   const MAP = [
@@ -14,6 +14,7 @@
   const INIT_BOXES = [[3, 3], [3, 1]];
 
   let player, boxes, history;
+  let boardEl = null;
 
   function generate() {
     player = [...INIT_PLAYER];
@@ -36,17 +37,15 @@
   function tryMove(dr, dc) {
     const nr = player[0] + dr;
     const nc = player[1] + dc;
-    if (cellType(nr, nc) === 1) return; // wall
+    if (cellType(nr, nc) === 1) return;
 
     const boxIdx = boxes.findIndex(b => b[0] === nr && b[1] === nc);
     if (boxIdx >= 0) {
-      // Push box
       const br = nr + dr;
       const bc = nc + dc;
-      if (cellType(br, bc) === 1) return; // wall behind box
-      if (hasBox(br, bc)) return; // another box behind
+      if (cellType(br, bc) === 1) return;
+      if (hasBox(br, bc)) return;
 
-      // Save state for undo
       history.push({
         player: [...player],
         boxes: boxes.map(b => [...b]),
@@ -54,11 +53,9 @@
 
       boxes[boxIdx] = [br, bc];
       player = [nr, nc];
-      // Check if this box landed on a goal
       if (MAP[br][bc] === 2) SFX.match();
       else SFX.click();
     } else {
-      // Simple move
       history.push({
         player: [...player],
         boxes: boxes.map(b => [...b]),
@@ -68,7 +65,7 @@
     }
 
     incrementMoves();
-    render();
+    renderBoard();
 
     if (isComplete()) {
       setTimeout(() => levelCleared(moveCount), 400);
@@ -83,15 +80,11 @@
     boxes = prev.boxes;
     moveCount--;
     updateMoveDisplay();
-    render();
+    renderBoard();
   }
 
-  function render() {
-    const area = document.getElementById('game-area');
-    const el = area.querySelector('.sokoban-board') || document.createElement('div');
-    el.className = 'sokoban-board';
-    el.style.gridTemplateColumns = `repeat(${MAP[0].length}, 60px)`;
-
+  // Only update the grid cells
+  function renderBoard() {
     let html = '';
     for (let r = 0; r < MAP.length; r++) {
       for (let c = 0; c < MAP[r].length; c++) {
@@ -124,44 +117,61 @@
         html += `<div class="${cls}">${content}</div>`;
       }
     }
-    el.innerHTML = html;
-    if (!el.parentNode) area.appendChild(el);
+    boardEl.innerHTML = html;
+  }
 
-    // Arrow buttons
-    let arrows = area.querySelector('.sokoban-arrows');
-    if (!arrows) {
-      arrows = document.createElement('div');
-      arrows.className = 'sokoban-arrows';
-      arrows.innerHTML = `
-        <button class="arrow-up" data-dir="-1,0">↑</button>
-        <button class="arrow-left" data-dir="0,-1">←</button>
-        <button class="arrow-down" data-dir="1,0">↓</button>
-        <button class="arrow-right" data-dir="0,1">→</button>
-      `;
-      arrows.querySelectorAll('button').forEach(btn => {
-        btn.onclick = () => {
-          const [dr, dc] = btn.dataset.dir.split(',').map(Number);
-          tryMove(dr, dc);
-        };
-      });
-      area.appendChild(arrows);
-    }
+  // Build full UI once
+  function buildUI() {
+    const area = document.getElementById('game-area');
 
-    // Undo button
-    let extra = area.querySelector('.sokoban-extra');
-    if (!extra) {
-      extra = document.createElement('div');
-      extra.className = 'sokoban-extra';
-      extra.innerHTML = '<button onclick="void(0)">Undo</button>';
-      extra.querySelector('button').onclick = () => undo();
-      area.appendChild(extra);
-    }
+    boardEl = document.createElement('div');
+    boardEl.className = 'sokoban-board';
+    boardEl.style.gridTemplateColumns = `repeat(${MAP[0].length}, 60px)`;
+    area.appendChild(boardEl);
+
+    const arrows = document.createElement('div');
+    arrows.className = 'sokoban-arrows';
+
+    const btnUp = document.createElement('button');
+    btnUp.className = 'arrow-up';
+    btnUp.textContent = '↑';
+    btnUp.addEventListener('click', function() { tryMove(-1, 0); });
+
+    const btnLeft = document.createElement('button');
+    btnLeft.className = 'arrow-left';
+    btnLeft.textContent = '←';
+    btnLeft.addEventListener('click', function() { tryMove(0, -1); });
+
+    const btnDown = document.createElement('button');
+    btnDown.className = 'arrow-down';
+    btnDown.textContent = '↓';
+    btnDown.addEventListener('click', function() { tryMove(1, 0); });
+
+    const btnRight = document.createElement('button');
+    btnRight.className = 'arrow-right';
+    btnRight.textContent = '→';
+    btnRight.addEventListener('click', function() { tryMove(0, 1); });
+
+    arrows.appendChild(btnUp);
+    arrows.appendChild(btnLeft);
+    arrows.appendChild(btnDown);
+    arrows.appendChild(btnRight);
+    area.appendChild(arrows);
+
+    const extra = document.createElement('div');
+    extra.className = 'sokoban-extra';
+    const undoBtn = document.createElement('button');
+    undoBtn.textContent = 'Undo';
+    undoBtn.addEventListener('click', function() { undo(); });
+    extra.appendChild(undoBtn);
+    area.appendChild(extra);
   }
 
   registerGame(4, {
     init() {
       generate();
-      render();
+      buildUI();
+      renderBoard();
     },
     cleanup() {}
   });
