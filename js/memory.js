@@ -71,7 +71,7 @@
     }
   }
 
-  registerGame(2, {
+  registerGame(3, {
     init() {
       generate();
       render();

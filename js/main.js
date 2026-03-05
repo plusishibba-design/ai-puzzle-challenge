@@ -4,7 +4,7 @@ let currentLang = 'en';
 const TEXTS = {
   en: {
     title: 'AI Puzzle Challenge',
-    subtitle: '5 puzzle levels to test AI browser control',
+    subtitle: '6 puzzle levels to test AI browser control',
     levelSelect: 'Select Level',
     moves: 'Moves',
     attempts: 'Attempts',
@@ -15,9 +15,10 @@ const TEXTS = {
     clearStats: 'Completed in {n} moves',
     clearStatsAttempts: 'Completed in {n} attempts',
     completeTitle: 'All Clear!',
-    completeMsg: 'Congratulations! All 5 levels completed.',
+    completeMsg: 'Congratulations! All 6 levels completed.',
     langBtn: '日本語',
     levels: [
+      { name: 'Number Tap', desc: 'Tap numbers 1-9 in order' },
       { name: '8-Puzzle', desc: 'Slide tiles into the correct order' },
       { name: 'Lights Out', desc: 'Turn off all the lights' },
       { name: 'Memory Match', desc: 'Find all matching pairs' },
@@ -25,6 +26,7 @@ const TEXTS = {
       { name: 'Sudoku', desc: 'Fill the grid with numbers 1-9' },
     ],
     rules: [
+      'Click the numbers from 1 to 9 in ascending order.',
       'Click a tile adjacent to the empty space to slide it.',
       'Click a cell to toggle it and its neighbors.',
       'Click cards to flip them. Match all pairs.',
@@ -34,7 +36,7 @@ const TEXTS = {
   },
   ja: {
     title: 'AI パズルチャレンジ',
-    subtitle: 'AIブラウザ操作の性能テスト — 5つのパズル',
+    subtitle: 'AIブラウザ操作の性能テスト — 6つのパズル',
     levelSelect: 'レベル選択',
     moves: '手数',
     attempts: '試行回数',
@@ -45,9 +47,10 @@ const TEXTS = {
     clearStats: '{n}手でクリア',
     clearStatsAttempts: '{n}回の試行でクリア',
     completeTitle: '全レベルクリア！',
-    completeMsg: 'おめでとうございます！5つのパズルをすべてクリアしました。',
+    completeMsg: 'おめでとうございます！6つのパズルをすべてクリアしました。',
     langBtn: 'EN',
     levels: [
+      { name: 'ナンバータップ', desc: '1から9まで順番にタップしよう' },
       { name: '8パズル', desc: 'タイルをスライドして正しい順番に並べよう' },
       { name: 'ライツアウト', desc: 'すべてのライトを消そう' },
       { name: '神経衰弱', desc: 'すべてのペアを見つけよう' },
@@ -55,6 +58,7 @@ const TEXTS = {
       { name: '数独', desc: '1-9の数字でグリッドを埋めよう' },
     ],
     rules: [
+      '回転・反転されたカードの数字を読み取り、1から9の順にクリック。',
       '空白に隣接するタイルをクリックしてスライドさせます。',
       'セルをクリックすると、そのセルと上下左右が反転します。',
       'カードをクリックしてめくり、すべてのペアを見つけてください。',
@@ -108,11 +112,11 @@ function resetLevel() {
 
 function levelCleared(moves) {
   showScreen('clear-screen');
-  const isMemory = currentLevel === 2;
+  const isMemory = currentLevel === 3;
   const template = isMemory ? t('clearStatsAttempts') : t('clearStats');
   document.getElementById('clear-stats').textContent = template.replace('{n}', moves);
-  document.getElementById('btn-next').style.display = currentLevel < 4 ? 'inline-block' : 'none';
-  if (currentLevel >= 4) {
+  document.getElementById('btn-next').style.display = currentLevel < 5 ? 'inline-block' : 'none';
+  if (currentLevel >= 5) {
     showScreen('complete-screen');
     SFX.complete();
   } else {
@@ -121,7 +125,7 @@ function levelCleared(moves) {
 }
 
 function nextLevel() {
-  if (currentLevel < 4) startLevel(currentLevel + 1);
+  if (currentLevel < 5) startLevel(currentLevel + 1);
 }
 
 function incrementMoves() {
@@ -135,7 +139,7 @@ function setMoveCount(n) {
 }
 
 function updateMoveDisplay() {
-  const isMemory = currentLevel === 2;
+  const isMemory = currentLevel === 3;
   const label = isMemory ? t('attempts') : t('moves');
   document.getElementById('move-count').textContent = `${label}: ${moveCount}`;
 }

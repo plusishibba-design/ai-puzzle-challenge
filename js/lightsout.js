@@ -55,7 +55,7 @@
     }
   }
 
-  registerGame(1, {
+  registerGame(2, {
     init() {
       generate();
       render();

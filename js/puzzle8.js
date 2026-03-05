@@ -1,26 +1,27 @@
-// Lv.1 — 8 Puzzle (3x3 slide puzzle)
+// Lv.2 — 8 Puzzle (3x3 slide puzzle, easy: 3-5 moves from solution)
 (function() {
   let state = [];
   const GOAL = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 
-  function isSolvable(arr) {
-    let inv = 0;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = i + 1; j < arr.length; j++) {
-        if (arr[i] && arr[j] && arr[i] > arr[j]) inv++;
-      }
-    }
-    return inv % 2 === 0;
-  }
-
   function shuffle() {
-    do {
-      state = [...GOAL];
-      for (let i = state.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [state[i], state[j]] = [state[j], state[i]];
-      }
-    } while (!isSolvable(state) || isComplete());
+    // Start from solved state and apply 3-5 random valid moves
+    state = [...GOAL];
+    const moves = 3 + Math.floor(Math.random() * 3); // 3-5 moves
+    let lastEmpty = -1;
+    for (let m = 0; m < moves; m++) {
+      const emptyIdx = state.indexOf(0);
+      const row = Math.floor(emptyIdx / 3), col = emptyIdx % 3;
+      const neighbors = [];
+      if (row > 0) neighbors.push(emptyIdx - 3);
+      if (row < 2) neighbors.push(emptyIdx + 3);
+      if (col > 0) neighbors.push(emptyIdx - 1);
+      if (col < 2) neighbors.push(emptyIdx + 1);
+      // Avoid undoing the last move
+      const filtered = neighbors.filter(n => n !== lastEmpty);
+      const pick = filtered[Math.floor(Math.random() * filtered.length)];
+      lastEmpty = emptyIdx;
+      [state[pick], state[emptyIdx]] = [state[emptyIdx], state[pick]];
+    }
   }
 
   function isComplete() {
@@ -58,7 +59,7 @@
     }
   }
 
-  registerGame(0, {
+  registerGame(1, {
     init() {
       shuffle();
       render();

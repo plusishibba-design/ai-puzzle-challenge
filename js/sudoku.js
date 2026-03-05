@@ -136,7 +136,7 @@
     }
   }
 
-  registerGame(4, {
+  registerGame(5, {
     init() {
       generate();
       render();

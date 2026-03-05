@@ -290,3 +290,51 @@ h1 { font-size: 22px; color: #e94560; }
 }
 .sudoku-numpad button:hover { background: #1a1a40; }
 .sudoku-numpad .clear-btn { width: 80px; background: #333; font-size: 14px; }
+
+/* Number Tap */
+.numbertap-field {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+}
+
+.numbertap-card {
+  position: absolute;
+  width: 74px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #16213e;
+  border: 3px solid #444;
+  border-top: 5px solid #e94560;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.3s, border-color 0.2s;
+}
+.numbertap-card:hover { border-color: #e94560; }
+
+.numbertap-card.done {
+  opacity: 0.2;
+  pointer-events: none;
+  border-color: #2ecc71;
+  background: #1a2e1a;
+}
+
+.numbertap-mark {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  background: #e94560;
+  border-radius: 50%;
+}
+
+.numbertap-num {
+  font-size: 30px;
+  font-weight: bold;
+  color: #eee;
+}
