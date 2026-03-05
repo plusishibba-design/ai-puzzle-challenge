@@ -4,20 +4,21 @@
   let cards = []; // { num, x, y, rotate, flipX, flipY }
 
   function generate() {
-    nextNum = 1;
+    nextNum = 2; // Card 1 is already done as a sample
     cards = [];
     const positions = getRandomPositions(9, 80, 80, 400, 400);
     const rotations = [0, 90, 180, 270];
 
     for (let i = 1; i <= 9; i++) {
       const pos = positions[i - 1];
+      const isSample = (i === 1);
       cards.push({
         num: i,
         x: pos.x,
         y: pos.y,
-        rotate: rotations[Math.floor(Math.random() * rotations.length)],
-        flipX: Math.random() < 0.4,
-        flipY: Math.random() < 0.4,
+        rotate: isSample ? 0 : rotations[Math.floor(Math.random() * rotations.length)],
+        flipX: isSample ? false : Math.random() < 0.4,
+        flipY: isSample ? false : Math.random() < 0.4,
       });
     }
   }
@@ -47,6 +48,7 @@
     el.className = 'numbertap-field';
 
     el.innerHTML = cards.map((c, i) => {
+      const isSample = c.num === 1;
       const done = c.num < nextNum;
       const transforms = [];
       if (c.rotate) transforms.push(`rotate(${c.rotate}deg)`);
@@ -54,7 +56,7 @@
       if (c.flipY) transforms.push('scaleY(-1)');
       const tf = transforms.length ? transforms.join(' ') : 'none';
 
-      return `<div class="numbertap-card ${done ? 'done' : ''}"
+      return `<div class="numbertap-card ${isSample ? 'sample' : done ? 'done' : ''}"
         data-idx="${i}"
         style="left:${c.x}px; top:${c.y}px; transform:${tf};"
       >
