@@ -167,7 +167,7 @@
     area.appendChild(extra);
   }
 
-  registerGame(4, {
+  registerGame(1, {
     init() {
       generate();
       buildUI();

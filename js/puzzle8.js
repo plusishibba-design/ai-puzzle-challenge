@@ -6,7 +6,7 @@
   function shuffle() {
     // Start from solved state and apply 3-5 random valid moves
     state = [...GOAL];
-    const moves = 3 + Math.floor(Math.random() * 3); // 3-5 moves
+    const moves = 15 + Math.floor(Math.random() * 6); // 15-20 moves
     let lastEmpty = -1;
     for (let m = 0; m < moves; m++) {
       const emptyIdx = state.indexOf(0);
@@ -59,7 +59,7 @@
     }
   }
 
-  registerGame(1, {
+  registerGame(2, {
     init() {
       shuffle();
       render();
