@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Puzzle Challenge</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1 id="app-title">AI Puzzle Challenge</h1>
+      <button id="lang-btn" onclick="toggleLang()">日本語</button>
+    </header>
+
+    <!-- Title Screen -->
+    <div id="title-screen" class="screen active">
+      <p id="title-desc" class="subtitle">5 puzzle levels to test AI browser control</p>
+      <div id="level-select" class="level-select"></div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+      <div class="game-header">
+        <span id="level-label">Level 1</span>
+        <span id="game-name"></span>
+        <span id="move-count">Moves: 0</span>
+      </div>
+      <p id="game-rule" class="game-rule"></p>
+      <div id="game-area"></div>
+      <div class="game-controls">
+        <button id="btn-reset" onclick="resetLevel()">Reset</button>
+        <button id="btn-back" onclick="showTitle()">Level Select</button>
+      </div>
+    </div>
+
+    <!-- Clear Screen -->
+    <div id="clear-screen" class="screen">
+      <h2 id="clear-title">Level Clear!</h2>
+      <p id="clear-stats"></p>
+      <button id="btn-next" onclick="nextLevel()">Next Level</button>
+      <button id="btn-back-title" onclick="showTitle()">Level Select</button>
+    </div>
+
+    <!-- Complete Screen -->
+    <div id="complete-screen" class="screen">
+      <h2 id="complete-title">All Clear!</h2>
+      <p id="complete-msg">Congratulations! All 5 levels completed.</p>
+      <button onclick="showTitle()">Back to Title</button>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/puzzle8.js"></script>
+  <script src="js/lightsout.js"></script>
+  <script src="js/memory.js"></script>
+  <script src="js/sokoban.js"></script>
+  <script src="js/sudoku.js"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+// ===== i18n =====
+let currentLang = 'en';
+
+const TEXTS = {
+  en: {
+    title: 'AI Puzzle Challenge',
+    subtitle: '5 puzzle levels to test AI browser control',
+    levelSelect: 'Select Level',
+    moves: 'Moves',
+    attempts: 'Attempts',
+    reset: 'Reset',
+    back: 'Level Select',
+    next: 'Next Level',
+    clearTitle: 'Level Clear!',
+    clearStats: 'Completed in {n} moves',
+    clearStatsAttempts: 'Completed in {n} attempts',
+    completeTitle: 'All Clear!',
+    completeMsg: 'Congratulations! All 5 levels completed.',
+    langBtn: '日本語',
+    levels: [
+      { name: '8-Puzzle', desc: 'Slide tiles into the correct order' },
+      { name: 'Lights Out', desc: 'Turn off all the lights' },
+      { name: 'Memory Match', desc: 'Find all matching pairs' },
+      { name: 'Sokoban', desc: 'Push boxes onto the goals' },
+      { name: 'Sudoku', desc: 'Fill the grid with numbers 1-9' },
+    ],
+    rules: [
+      'Click a tile adjacent to the empty space to slide it.',
+      'Click a cell to toggle it and its neighbors.',
+      'Click cards to flip them. Match all pairs.',
+      'Use arrow buttons to move. Push boxes onto red goals.',
+      'Click a cell, then a number button to fill it in.',
+    ],
+  },
+  ja: {
+    title: 'AI パズルチャレンジ',
+    subtitle: 'AIブラウザ操作の性能テスト — 5つのパズル',
+    levelSelect: 'レベル選択',
+    moves: '手数',
+    attempts: '試行回数',
+    reset: 'リセット',
+    back: 'レベル選択',
+    next: '次のレベル',
+    clearTitle: 'レベルクリア！',
+    clearStats: '{n}手でクリア',
+    clearStatsAttempts: '{n}回の試行でクリア',
+    completeTitle: '全レベルクリア！',
+    completeMsg: 'おめでとうございます！5つのパズルをすべてクリアしました。',
+    langBtn: 'EN',
+    levels: [
+      { name: '8パズル', desc: 'タイルをスライドして正しい順番に並べよう' },
+      { name: 'ライツアウト', desc: 'すべてのライトを消そう' },
+      { name: '神経衰弱', desc: 'すべてのペアを見つけよう' },
+      { name: '倉庫番', desc: '箱をゴールまで押して運ぼう' },
+      { name: '数独', desc: '1-9の数字でグリッドを埋めよう' },
+    ],
+    rules: [
+      '空白に隣接するタイルをクリックしてスライドさせます。',
+      'セルをクリックすると、そのセルと上下左右が反転します。',
+      'カードをクリックしてめくり、すべてのペアを見つけてください。',
+      '矢印ボタンで移動し、箱を赤いゴールの上に押してください。',
+      'セルをクリックし、数字ボタンで入力してください。',
+    ],
+  },
+};
+
+function t(key) { return TEXTS[currentLang][key]; }
+
+function toggleLang() {
+  currentLang = currentLang === 'en' ? 'ja' : 'en';
+  updateUI();
+}
+
+// ===== Stage Management =====
+let currentLevel = 0; // 0-indexed (0=Lv1, 4=Lv5)
+let moveCount = 0;
+
+const games = []; // filled by each game module: { init, cleanup }
+
+function registerGame(levelIndex, gameObj) {
+  games[levelIndex] = gameObj;
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showTitle() {
+  if (games[currentLevel] && games[currentLevel].cleanup) games[currentLevel].cleanup();
+  showScreen('title-screen');
+  renderLevelSelect();
+}
+
+function startLevel(lvl) {
+  currentLevel = lvl;
+  moveCount = 0;
+  showScreen('game-screen');
+  updateUI();
+  document.getElementById('game-area').innerHTML = '';
+  if (games[currentLevel]) games[currentLevel].init();
+}
+
+function resetLevel() {
+  if (games[currentLevel] && games[currentLevel].cleanup) games[currentLevel].cleanup();
+  startLevel(currentLevel);
+}
+
+function levelCleared(moves) {
+  showScreen('clear-screen');
+  const isMemory = currentLevel === 2;
+  const template = isMemory ? t('clearStatsAttempts') : t('clearStats');
+  document.getElementById('clear-stats').textContent = template.replace('{n}', moves);
+  document.getElementById('btn-next').style.display = currentLevel < 4 ? 'inline-block' : 'none';
+  if (currentLevel >= 4) {
+    showScreen('complete-screen');
+  }
+}
+
+function nextLevel() {
+  if (currentLevel < 4) startLevel(currentLevel + 1);
+}
+
+function incrementMoves() {
+  moveCount++;
+  updateMoveDisplay();
+}
+
+function setMoveCount(n) {
+  moveCount = n;
+  updateMoveDisplay();
+}
+
+function updateMoveDisplay() {
+  const isMemory = currentLevel === 2;
+  const label = isMemory ? t('attempts') : t('moves');
+  document.getElementById('move-count').textContent = `${label}: ${moveCount}`;
+}
+
+// ===== UI Update =====
+function renderLevelSelect() {
+  const container = document.getElementById('level-select');
+  const levels = t('levels');
+  container.innerHTML = levels.map((lv, i) => `
+    <div class="level-btn" onclick="startLevel(${i})">
+      <div class="level-num">${i + 1}</div>
+      <div class="level-info">
+        <div class="name">${lv.name}</div>
+        <div class="desc">${lv.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateUI() {
+  document.getElementById('app-title').textContent = t('title');
+  document.getElementById('title-desc').textContent = t('subtitle');
+  document.getElementById('lang-btn').textContent = t('langBtn');
+  document.getElementById('btn-reset').textContent = t('reset');
+  document.getElementById('btn-back').textContent = t('back');
+  document.getElementById('btn-next').textContent = t('next');
+  document.getElementById('btn-back-title').textContent = t('back');
+  document.getElementById('clear-title').textContent = t('clearTitle');
+  document.getElementById('complete-title').textContent = t('completeTitle');
+  document.getElementById('complete-msg').textContent = t('completeMsg');
+
+  const levels = t('levels');
+  if (levels[currentLevel]) {
+    document.getElementById('level-label').textContent = `Level ${currentLevel + 1}`;
+    document.getElementById('game-name').textContent = levels[currentLevel].name;
+    document.getElementById('game-rule').textContent = t('rules')[currentLevel];
+  }
+  updateMoveDisplay();
+  renderLevelSelect();
+}
+
+// Init
+updateUI();
+showScreen('title-screen');
