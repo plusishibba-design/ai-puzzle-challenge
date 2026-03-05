@@ -54,6 +54,9 @@
 
       boxes[boxIdx] = [br, bc];
       player = [nr, nc];
+      // Check if this box landed on a goal
+      if (MAP[br][bc] === 2) SFX.match();
+      else SFX.click();
     } else {
       // Simple move
       history.push({
@@ -61,6 +64,7 @@
         boxes: boxes.map(b => [...b]),
       });
       player = [nr, nc];
+      SFX.move();
     }
 
     incrementMoves();
@@ -73,6 +77,7 @@
 
   function undo() {
     if (history.length === 0) return;
+    SFX.undo();
     const prev = history.pop();
     player = prev.player;
     boxes = prev.boxes;

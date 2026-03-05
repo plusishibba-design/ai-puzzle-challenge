@@ -43,6 +43,7 @@
     if (flipped.includes(idx) || matched.has(idx)) return;
 
     flipped.push(idx);
+    SFX.flip();
     render();
 
     if (flipped.length === 2) {
@@ -54,12 +55,14 @@
         matched.add(b);
         flipped = [];
         locked = false;
+        SFX.match();
         render();
         if (matched.size === cards.length) {
           setTimeout(() => levelCleared(moveCount), 400);
         }
       } else {
         setTimeout(() => {
+          SFX.miss();
           flipped = [];
           locked = false;
           render();

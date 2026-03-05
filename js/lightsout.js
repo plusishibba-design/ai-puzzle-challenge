@@ -46,6 +46,7 @@
 
   function clickCell(idx) {
     toggleAt(idx);
+    SFX.click();
     incrementMoves();
     render();
 

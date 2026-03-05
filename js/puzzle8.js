@@ -49,6 +49,7 @@
     if (!adjacent) return;
 
     [state[idx], state[emptyIdx]] = [state[emptyIdx], state[idx]];
+    SFX.click();
     incrementMoves();
     render();
 

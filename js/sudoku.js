@@ -68,6 +68,9 @@
     if (grid[r][c] !== n) {
       grid[r][c] = n;
       incrementMoves();
+      // Sound: error or click
+      if (n !== SOLUTION[r][c]) SFX.error();
+      else SFX.click();
     }
     render();
 

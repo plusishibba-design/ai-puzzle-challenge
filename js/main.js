@@ -114,6 +114,9 @@ function levelCleared(moves) {
   document.getElementById('btn-next').style.display = currentLevel < 4 ? 'inline-block' : 'none';
   if (currentLevel >= 4) {
     showScreen('complete-screen');
+    SFX.complete();
+  } else {
+    SFX.fanfare();
   }
 }
 
