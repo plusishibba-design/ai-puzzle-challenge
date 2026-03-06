@@ -75,8 +75,40 @@ function toggleLang() {
   updateUI();
 }
 
+// ===== Timer =====
+let timerStart = 0;
+let timerInterval = null;
+
+function startTimer() {
+  stopTimer();
+  timerStart = Date.now();
+  updateTimerDisplay();
+  timerInterval = setInterval(updateTimerDisplay, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
+function getElapsedSeconds() {
+  return Math.floor((Date.now() - timerStart) / 1000);
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function updateTimerDisplay() {
+  document.getElementById('timer').textContent = formatTime(getElapsedSeconds());
+}
+
 // ===== Stage Management =====
-let currentLevel = 0; // 0-indexed (0=Lv1, 4=Lv5)
+let currentLevel = 0; // 0-indexed (0=Lv1, 5=Lv6)
 let moveCount = 0;
 
 const games = []; // filled by each game module: { init, cleanup }
@@ -91,6 +123,7 @@ function showScreen(id) {
 }
 
 function showTitle() {
+  stopTimer();
   if (games[currentLevel] && games[currentLevel].cleanup) games[currentLevel].cleanup();
   showScreen('title-screen');
   renderLevelSelect();
@@ -103,6 +136,7 @@ function startLevel(lvl) {
   updateUI();
   document.getElementById('game-area').innerHTML = '';
   if (games[currentLevel]) games[currentLevel].init();
+  startTimer();
 }
 
 function resetLevel() {
@@ -111,10 +145,13 @@ function resetLevel() {
 }
 
 function levelCleared(moves) {
+  stopTimer();
+  const elapsed = getElapsedSeconds();
   showScreen('clear-screen');
   const isMemory = currentLevel === 3;
   const template = isMemory ? t('clearStatsAttempts') : t('clearStats');
   document.getElementById('clear-stats').textContent = template.replace('{n}', moves);
+  document.getElementById('clear-time').textContent = `Time: ${formatTime(elapsed)}`;
   document.getElementById('btn-next').style.display = currentLevel < 5 ? 'inline-block' : 'none';
   if (currentLevel >= 5) {
     showScreen('complete-screen');

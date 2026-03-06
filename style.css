@@ -91,6 +91,7 @@ h1 { font-size: 22px; color: #e94560; }
 
 #level-label { color: #e94560; font-weight: bold; }
 #game-name { color: #aaa; }
+#timer { color: #e94560; font-weight: bold; font-size: 14px; font-variant-numeric: tabular-nums; }
 #move-count { color: #0f3460; background: #eee; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 13px; }
 
 .game-rule {
@@ -134,7 +135,8 @@ h1 { font-size: 22px; color: #e94560; }
 /* Clear / Complete */
 #clear-screen, #complete-screen { text-align: center; padding-top: 60px; }
 #clear-screen h2, #complete-screen h2 { font-size: 28px; color: #e94560; margin-bottom: 12px; }
-#clear-stats { color: #aaa; margin-bottom: 24px; font-size: 15px; }
+#clear-stats { color: #aaa; margin-bottom: 8px; font-size: 15px; }
+#clear-time { color: #e94560; margin-bottom: 24px; font-size: 18px; font-weight: bold; }
 #complete-msg { color: #aaa; margin-bottom: 24px; }
 
 /* ===== Shared Game Grids ===== */
